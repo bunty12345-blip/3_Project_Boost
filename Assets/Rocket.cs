@@ -22,7 +22,13 @@ public class Rocket : MonoBehaviour {
 		Thrust();
     }
     void OnCollisionEnter(Collision collision){
-        print("collided");
+        switch (collision.gameObject.tag){
+            case "Friendly"  : //do nothing 
+            break;
+            default : print("Dead");
+            //kill player
+            break;
+        }
     }
  private void Thrust()
     {
