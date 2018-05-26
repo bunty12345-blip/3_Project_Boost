@@ -8,6 +8,9 @@ public class Rocket : MonoBehaviour {
 					AudioSource audioSource;
                     [SerializeField] float rcsThrust = 100f;
                     [SerializeField] float mainThrust = 100f;
+                    [SerializeField] AudioClip mainEngine;
+                     [SerializeField] AudioClip success;
+                      [SerializeField] AudioClip death;
 
                     enum State {Alive ,Trancending , Dying};
                     State state = State.Alive;
@@ -36,16 +39,30 @@ public class Rocket : MonoBehaviour {
             case "Friendly"  : //do nothing 
             break;
             case "Finish":
-            state = State.Trancending;
-               Invoke("LoadNextScene",1f);
+           StartSuccessSequence();
                 break;
 
-            default : 
-            state  = State.Dying;
-            Invoke("LoadFirstLevel",1f);
-            //kill player
-            break;
+            default:
+                StartDeathSequence();
+                //kill player
+                break;
         }
+    }
+
+    private void StartDeathSequence()
+    {
+        state = State.Dying;
+        audioSource.Stop();
+        audioSource.PlayOneShot(death);
+        Invoke("LoadFirstLevel", 1f);
+    }
+
+    private void StartSuccessSequence()
+    {
+        audioSource.Stop();
+        audioSource.PlayOneShot(success);
+        state = State.Trancending;
+        Invoke("LoadNextScene", 1f);
     }
 
     private void LoadNextScene()
@@ -60,19 +77,26 @@ public class Rocket : MonoBehaviour {
     private void Thrust()
     {
         if (Input.GetKey(KeyCode.Space))
-        {      //can thrust while rotating 
-            print("Thrusting !");
-            rigidBody.AddRelativeForce(Vector3.up*mainThrust);
-            if (!audioSource.isPlaying)
-            {   //so that it doesn't layer on top of each other
-                audioSource.Play();
-            }
+        {
+            ApplyThrust();
         }
         else
         {
             audioSource.Stop();
         }
     }
+
+    private void ApplyThrust()
+    {
+        //can thrust while rotating 
+        print("Thrusting !");
+        rigidBody.AddRelativeForce(Vector3.up * mainThrust);
+        if (!audioSource.isPlaying)
+        {   //so that it doesn't layer on top of each other
+            audioSource.PlayOneShot(mainEngine);
+        }
+    }
+
     private void Rotate()
     {
 		
