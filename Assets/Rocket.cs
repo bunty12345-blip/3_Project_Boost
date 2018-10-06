@@ -138,7 +138,8 @@ public class Rocket : MonoBehaviour {
 		
         float rotationThisFrame = rcsThrust * Time.deltaTime;
         
-        rigidBody.freezeRotation = true ;  // take manual control of rotation 
+        rigidBody.angularVelocity = Vector3.zero;
+        
         if (Input.GetKey(KeyCode.A))
         {
             transform.Rotate(Vector3.forward * rotationThisFrame);
@@ -151,7 +152,8 @@ public class Rocket : MonoBehaviour {
             print("Rotating Right !");
         }
 
-		rigidBody.freezeRotation = false ; // resume physics control of rotation . 
+		
+
     }
 
    
